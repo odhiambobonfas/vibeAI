@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeAI | Registered Participants</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .admin-main {
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        th {
+            background: rgba(255, 255, 255, 0.05);
+            font-family: var(--font-heading);
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 0.1em;
+            color: var(--accent-color);
+        }
+        tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+        .status-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            background: var(--accent-glow);
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <nav>
+                <div class="logo">Vibe<span>AI</span></div>
+                <div class="nav-links">
+                    <a href="/">Challenges</a>
+                    <a href="/participants.html" class="active">Participants</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="admin-main">
+            <section>
+                <div class="section-header">
+                    <h1>Registered <span>Participants</span></h1>
+                    <p>Public record of current vibe-seekers and challenge applicants.</p>
+                </div>
+                
+                <div id="admin-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Participant Name</th>
+                                <th>Challenge ID</th>
+                                <th>Eligibility Summary</th>
+                                <th>Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="applicant-list">
+                            <!-- Applicants will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module">
+        const API_URL = 'http://localhost:3000/api';
+        
+        async function fetchApplicants() {
+            try {
+                const response = await fetch(`${API_URL}/applicants`);
+                const applicants = await response.json();
+                renderApplicants(applicants);
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        function renderApplicants(applicants) {
+            const list = document.getElementById('applicant-list');
+            if (applicants.length === 0) {
+                list.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 3rem;">No applicants yet. The world is quiet.</td></tr>';
+                return;
+            }
+            list.innerHTML = applicants.reverse().map(app => `
+                <tr>
+                    <td>${app.name}</td>
+                    <td><span class="status-badge">${app.challengeId}</span></td>
+                    <td style="max-width: 300px; font-size: 0.85rem; color: var(--text-secondary)">${app.eligibility || 'Standard Vibe'}</td>
+                    <td>${new Date(app.timestamp).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        document.addEventListener('DOMContentLoaded', fetchApplicants);
+    </script>
+</body>
+</html>

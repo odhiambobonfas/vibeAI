@@ -1,0 +1,48 @@
+[
+  {
+    "challengeId": "1",
+    "name": "Test User",
+    "email": "test@example.com",
+    "github": "https://github.com/testuser",
+    "message": "I am the best fit because I have the vibes.",
+    "id": 1777106530344,
+    "timestamp": "2026-04-25T08:42:10.344Z"
+  },
+  {
+    "challengeId": "1",
+    "name": "Final Test",
+    "email": "final@example.com",
+    "github": "https://github.com/finaltest",
+    "message": "One last check for the success vibe.",
+    "id": 1777106815401,
+    "timestamp": "2026-04-25T08:46:55.401Z"
+  },
+  {
+    "challengeId": "3",
+    "name": "Bonfas Othina",
+    "email": "odhiambobonfas78@gmail.com",
+    "github": "https://github.com/odhiambobonfas",
+    "message": "The best",
+    "id": 1777107905042,
+    "timestamp": "2026-04-25T09:05:05.042Z"
+  },
+  {
+    "challengeId": "1777110546395",
+    "name": "Vibe Master",
+    "email": "vibe@master.com",
+    "github": "https://github.com/vibemaster",
+    "message": "Lunar vibes are my specialty.",
+    "id": 1777110619987,
+    "timestamp": "2026-04-25T09:50:19.987Z"
+  },
+  {
+    "challengeId": "1",
+    "name": "Privacy Tester",
+    "email": "privacy@test.com",
+    "github": "https://github.com/privacy",
+    "eligibility": "5 years of AI vibing.",
+    "message": "Verification test.",
+    "id": 1777110898363,
+    "timestamp": "2026-04-25T09:54:58.363Z"
+  }
+]

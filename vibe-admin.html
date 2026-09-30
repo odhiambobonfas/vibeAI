@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeAI | Secret Management Console</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .admin-layout {
+            padding: 8rem 2rem 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 2rem;
+        }
+        .management-card {
+            background: var(--card-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(12px);
+            margin-bottom: 2rem;
+        }
+        .admin-form .form-group {
+            margin-bottom: 1rem;
+        }
+        .admin-form input, .admin-form textarea, .admin-form select {
+            background: rgba(255, 255, 255, 0.03);
+        }
+        .challenge-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--glass-border);
+        }
+        .challenge-item:last-child {
+            border-bottom: none;
+        }
+        .btn-delete {
+            background: rgba(255, 50, 50, 0.1);
+            color: #ff5555;
+            border: 1px solid #ff5555;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .btn-delete:hover {
+            background: #ff5555;
+            color: white;
+        }
+        @media (max-width: 900px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <header>
+            <nav>
+                <div class="logo">Vibe<span>AI</span> | Admin</div>
+                <div class="nav-links">
+                    <a href="/">Home Site</a>
+                    <a href="/participants.html">View Participants</a>
+                </div>
+            </nav>
+        </header>
+
+        <main class="admin-layout">
+            <div class="main-column">
+                <div class="management-card">
+                    <h2 style="margin-bottom: 1.5rem">Manage Competitions</h2>
+                    <div id="admin-challenge-list">
+                        <!-- Challenges will be listed here with delete buttons -->
+                        <div class="loading">Fetching current vibes...</div>
+                    </div>
+                </div>
+
+                <div class="management-card">
+                    <h2 style="margin-bottom: 1.5rem">Recent Participants</h2>
+                    <div id="admin-participant-list">
+                        <!-- Participants summary -->
+                         <p>Loading summary...</p>
+                    </div>
+                    <a href="/participants.html" class="btn-small" style="display:inline-block; margin-top: 1rem;">View All Participants</a>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="management-card admin-form">
+                    <h2 style="margin-bottom: 1.5rem">Post New Vibe</h2>
+                    <form id="add-challenge-form">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="c-title" required placeholder="The Quantum Ripple">
+                        </div>
+                        <div class="form-group">
+                            <label>Category</label>
+                            <input type="text" id="c-category" required placeholder="Machine Learning">
+                        </div>
+                        <div class="form-group">
+                            <label>Prize</label>
+                            <input type="text" id="c-prize" required placeholder="$1,500">
+                        </div>
+                        <div class="form-group">
+                            <label>Difficulty</label>
+                            <select id="c-difficulty">
+                                <option>Easy</option>
+                                <option>Medium</option>
+                                <option>Hard</option>
+                                <option>Expert</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea id="c-desc" rows="4" required placeholder="Describe the challenge vibes..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary">Launch Competition</button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="module">
+        const API_URL = 'http://localhost:3000/api';
+
+        async function init() {
+            fetchChallenges();
+            fetchParticipants();
+        }
+
+        async function fetchChallenges() {
+            const list = document.getElementById('admin-challenge-list');
+            try {
+                const res = await fetch(`${API_URL}/challenges`);
+                const data = await res.json();
+                list.innerHTML = data.map(c => `
+                    <div class="challenge-item">
+                        <div>
+                            <strong>${c.title}</strong>
+                            <div style="font-size: 0.8rem; color: var(--text-secondary)">${c.category} - ${c.prize}</div>
+                        </div>
+                        <button class="btn-delete" onclick="deleteChallenge(${c.id})">Delete</button>
+                    </div>
+                `).join('') || '<p>No competition active. Start one!</p>';
+            } catch (err) {
+                list.innerHTML = '<p>Error loading challenges.</p>';
+            }
+        }
+
+        async function fetchParticipants() {
+            const list = document.getElementById('admin-participant-list');
+            try {
+                const res = await fetch(`${API_URL}/applicants`);
+                const data = await res.json();
+                const recent = data.reverse();
+                list.innerHTML = recent.length ? recent.map(p => `
+                    <div style="padding: 1rem 0; border-bottom: 1px solid var(--glass-border); font-size: 0.9rem;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem">
+                            <strong>${p.name}</strong>
+                            <span style="color: var(--accent-color)">ID: ${p.challengeId}</span>
+                        </div>
+                        <div style="color: var(--text-secondary); margin-bottom: 0.5rem;">
+                            Email: ${p.email} | <a href="${p.github}" target="_blank" style="color: var(--accent-color)">Github</a>
+                        </div>
+                        <div style="font-style: italic; color: var(--text-secondary); background: rgba(255,255,255,0.02); padding: 0.5rem; border-radius: 4px;">
+                            Eligibility: ${p.eligibility || 'N/A'}
+                        </div>
+                    </div>
+                `).join('') : '<p>No registrations yet.</p>';
+            } catch (err) {
+                list.innerHTML = '<p>Error loading participants.</p>';
+            }
+        }
+
+        window.deleteChallenge = async (id) => {
+            if (!confirm('Are you sure you want to end this vibe?')) return;
+            await fetch(`${API_URL}/challenges/${id}`, { method: 'DELETE' });
+            fetchChallenges();
+        };
+
+        document.getElementById('add-challenge-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const challenge = {
+                title: document.getElementById('c-title').value,
+                category: document.getElementById('c-category').value,
+                prize: document.getElementById('c-prize').value,
+                difficulty: document.getElementById('c-difficulty').value,
+                description: document.getElementById('c-desc').value,
+            };
+
+            const res = await fetch(`${API_URL}/challenges`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(challenge)
+            });
+
+            if (res.ok) {
+                document.getElementById('add-challenge-form').reset();
+                fetchChallenges();
+                alert('Competition Launched! 🚀');
+            }
+        });
+
+        init();
+    </script>
+</body>
+</html>

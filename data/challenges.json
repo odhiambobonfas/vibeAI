@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "title": "The Neural Glitch",
+    "prize": "$500",
+    "difficulty": "Hard",
+    "description": "Debug a recursive LLM loop that started writing its own gothic poetry. Restore sanity to the system.",
+    "category": "Debugging"
+  },
+  {
+    "id": 2,
+    "title": "Vibe Mesh Protocol",
+    "prize": "$1,200",
+    "difficulty": "Expert",
+    "description": "Build a real-time visualization of a multi-agent swarm consensus algorithm using three.js.",
+    "category": "Frontend"
+  },
+  {
+    "title": "Astro Coder",
+    "category": "Architecture",
+    "prize": "$3000",
+    "difficulty": "Hard",
+    "description": "Build a lunar colony simulation.",
+    "id": 1777110546395
+  }
+]
